@@ -210,8 +210,7 @@ namespace Streamiz.Kafka.Net.Table.Internal
 
         public IKTable<K, VR> LeftJoin<VT, VR>(IKTable<K, VT> table, IValueJoiner<V, VT, VR> valueJoiner, Materialized<K, VR, IKeyValueStore<Bytes, byte[]>> materialized, string named = null)
             => DoJoin(table, valueJoiner, named, materialized, true, false);
-
-
+        
         public IKTable<K, VR> LeftJoin<VT, VR>(IKTable<K, VT> table, Func<V, VT, VR> valueJoiner)
             => LeftJoin(table, valueJoiner, null);
 
