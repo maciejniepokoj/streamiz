@@ -41,6 +41,7 @@ namespace Streamiz.Kafka.Net.Processors.Internal
         private readonly IDictionary<string, string> storesToTopics = new Dictionary<string, string>();
         // map from changelog topic name to its corresponding state store.
         private readonly IDictionary<string, string> topicsToStores = new Dictionary<string, string>();
+        private bool alreadyRewrote = false;
 
         internal IEnumerable<string> GetSourceTopics()
         {
@@ -484,14 +485,18 @@ namespace Streamiz.Kafka.Net.Processors.Internal
 
         internal void RewriteTopology(IStreamConfig config)
         {
-            foreach (var storeBuilder in globalStateBuilders.Values)
+            if (!alreadyRewrote)
             {
-                GlobalStateStores.Add(storeBuilder.Name, storeBuilder.Build());
+                foreach (var storeBuilder in globalStateBuilders.Values)
+                {
+                    GlobalStateStores.Add(storeBuilder.Name, storeBuilder.Build());
+                }
+
+                applicationId = config.ApplicationId;
+                config.DefaultKeySerDes?.Initialize(new SerDesContext(config));
+                config.DefaultValueSerDes?.Initialize(new SerDesContext(config));
+                alreadyRewrote = true;
             }
-            
-            applicationId = config.ApplicationId;
-            config.DefaultKeySerDes?.Initialize(new SerDesContext(config));
-            config.DefaultValueSerDes?.Initialize(new SerDesContext(config));
         }
 
         internal void BuildTopology(RootNode root, IList<StreamGraphNode> nodes)

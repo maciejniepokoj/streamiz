@@ -143,7 +143,7 @@ public class Reproducer344Tests
         var config = new StreamConfig<StringSerDes, StringSerDes>();
         config.ApplicationId = "test-reproducer-344";
         config.BootstrapServers = "localhost:9092";
-        
+
         using var driver = new TopologyTestDriver(stream, config);
         var inputTopic = driver.CreateInputTopic<string, string>($"test-input");
         var table1Topic = driver.CreateInputTopic<string, EventEnvelope<Event>, StringSerDes, JsonSerDes<EventEnvelope<Event>>>("test-table1");

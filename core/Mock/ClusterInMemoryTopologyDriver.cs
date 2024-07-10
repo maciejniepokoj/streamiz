@@ -56,9 +56,8 @@ namespace Streamiz.Kafka.Net.Mock
             kafkaSupplier.MetricsRegistry = metricsRegistry;
             
             pipeBuilder = new KafkaPipeBuilder(kafkaSupplier);
-
-            // duplicates
-            // topologyBuilder.RewriteTopology(configuration);
+            
+            topologyBuilder.RewriteTopology(configuration);
             
             // ONLY FOR CHECK IF TOPOLOGY IS CORRECT
             topologyBuilder.BuildTopology();
