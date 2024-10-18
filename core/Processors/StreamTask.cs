@@ -476,6 +476,7 @@ namespace Streamiz.Kafka.Net.Processors
                     }
 
                     collector.Close();
+                    producer.Dispose();
                     producer = null;
                 }
                 

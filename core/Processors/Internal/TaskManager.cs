@@ -137,6 +137,8 @@ namespace Streamiz.Kafka.Net.Processors.Internal
             
             partitionsToTaskId.Clear();
 
+            adminClient?.Dispose();
+
             // if one delete request is in progress, we wait the result before closing the manager
             if (currentDeleteTask is {IsCompleted: false})
                 currentDeleteTask.GetAwaiter().GetResult();
