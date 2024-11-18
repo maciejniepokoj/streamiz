@@ -2254,7 +2254,7 @@ namespace Streamiz.Kafka.Net
         /// </para>
         /// </summary>
         /// <param name="properties">Dictionary of stream properties</param>
-        public StreamConfig(IDictionary<string, dynamic> properties)
+        public StreamConfig(IDictionary<string, dynamic> properties, ILoggerFactory loggerFactory = null)
         {
             InitializeReflectedProperties();
             
@@ -2300,17 +2300,22 @@ namespace Streamiz.Kafka.Net
             PartitionAssignmentStrategy = Confluent.Kafka.PartitionAssignmentStrategy.CooperativeSticky;
             Partitioner = Confluent.Kafka.Partitioner.Murmur2Random;
 
-            Logger = LoggerFactory.Create(builder =>
-            {
-                builder.SetMinimumLevel(LogLevel.Information);
-                builder.AddConsole();
-            });
-            
+            Logger = loggerFactory;
+
             if (properties != null)
             {
                 foreach (var k in properties)
                     AddConfig(k.Key, k.Value);
             }
+
+            if (Logger != null)
+                return;
+
+            Logger = LoggerFactory.Create(builder =>
+            {
+                builder.SetMinimumLevel(LogLevel.Information);
+                builder.AddConsole();
+            });
         }
 
         #endregion
@@ -3347,8 +3352,9 @@ namespace Streamiz.Kafka.Net
         /// </para>
         /// </summary>
         /// <param name="properties">Dictionary of stream properties</param>
-        public StreamConfig(IDictionary<string, dynamic> properties)
-            : base(properties)
+        /// <param name="loggerFactory">LoggerFactory for creating loggers. If not provided new instance will be created</param>
+        public StreamConfig(IDictionary<string, dynamic> properties, ILoggerFactory loggerFactory = null)
+            : base(properties, loggerFactory)
         {
             DefaultKeySerDes = new KS();
             DefaultValueSerDes = new VS();
